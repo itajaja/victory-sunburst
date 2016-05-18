@@ -1,0 +1,2 @@
+--- # <ROOT>/.eslintrc
+  extends: ./node_modules/builder-victory-component/config/eslint/.eslintrc-client
