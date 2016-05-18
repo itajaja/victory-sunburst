@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/itajaja/victory-sunburst",
   "scripts": {
+    "builder": "builder",
     "postinstall": "builder run npm:postinstall",
     "preversion": "builder run npm:preversion",
     "version": "builder run npm:version && git add dist && git commit -m \"Commit 'dist/' for publishing\"",
@@ -21,7 +22,10 @@
   "dependencies": {
     "builder": "^2.2.0",
     "builder-victory-component": "~0.2.1",
-    "radium": "~0.16.2"
+    "d3": "^3.5.17",
+    "lodash": "^4.12.0",
+    "radium": "~0.16.2",
+    "victory-core": "^2.0.1"
   },
   "devDependencies": {
     "builder-victory-component-dev": "~0.2.1",
