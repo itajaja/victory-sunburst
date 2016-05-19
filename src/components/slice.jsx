@@ -12,12 +12,10 @@ export default class Slice extends React.Component {
 
   render() {
     const { pathFunction, slice, style, ...props } = this.props;
-    const d = pathFunction(slice);
-    d.transition().duration(1000);
 
     return (
       <path
-        d={d}
+        d={pathFunction(slice)}
         style={Helpers.evaluateStyle(style, slice)}
         {...props}
       />

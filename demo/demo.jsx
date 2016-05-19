@@ -1,8 +1,8 @@
-import d3 from "d3";
 import React from "react";
 
 import {VictorySunburst} from "../src/index";
-import data from "./flare";
+import flare from "./flare";
+import krona from "./krona";
 
 const getAncestors = (node = {}) => {
   const path = [];
@@ -20,7 +20,17 @@ const valueFuncs = [
 ];
 
 class Demo extends React.Component {
-  state = {}
+  state = {
+    data: krona
+  }
+
+  onClick(selected) {
+    if (selected.depth === 0 && selected.parent) {
+      this.setState({ data: selected.parent });
+    } else {
+      this.setState({ data: selected });
+    }
+  }
 
   onHover(selected) {
     this.setState({ selected });
@@ -31,8 +41,13 @@ class Demo extends React.Component {
     this.setState({ x: x ? 0 : 1 });
   }
 
+  onToggleDataset() {
+    const { data } = this.state;
+    this.setState({data: data === flare ? krona : flare});
+  }
+
   render() {
-    const { selected, x } = this.state;
+    const { selected, x, data } = this.state;
     const ancestors = getAncestors(selected);
     const valueFunc = valueFuncs[x || 0];
 
@@ -40,24 +55,26 @@ class Demo extends React.Component {
       <div className="demo">
         <span>
           <button onClick={this.onToggleSize.bind(this)}>
-            toggle
+            toggle measure
+          </button>
+        </span>
+        <span>
+          <button onClick={this.onToggleDataset.bind(this)}>
+            toggle dataset
           </button>
         </span>
         <h2 className="label">{selected && selected.name}</h2>
         <VictorySunburst
-          animate={{duration: 500}}
-          data={data()}
+          data={data}
           value={valueFunc}
           style={{
             data: {
-              fillRule: "evenodd",
-              padding: 0,
-              opacity: (slice) => ancestors.indexOf(slice) >= 0 ? 1 : 0.5,
-              display: (slice) => slice.depth ? "initial" : "none"
+              opacity: (slice) => ancestors.indexOf(slice) >= 0 ? 1 : 0.5
             }
           }}
           events={{
             data: {
+              onClick: this.onClick.bind(this),
               onMouseOver: this.onHover.bind(this)
             }
           }}

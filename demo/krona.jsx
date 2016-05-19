@@ -51,4 +51,4 @@ function buildHierarchy(csv, separator = '\t') {
   return root;
 }
 
-export default [buildHierarchy(csv, ';')]
+export default buildHierarchy(csv, ";");
