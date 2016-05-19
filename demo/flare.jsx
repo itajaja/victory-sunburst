@@ -1,4 +1,4 @@
-export default [{
+export default () => ({
   "name": "flare",
   "children": [
     {
@@ -1037,4 +1037,4 @@ export default [{
       ]
     }
   ]
-}];
+});

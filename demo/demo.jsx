@@ -1,3 +1,4 @@
+import d3 from "d3";
 import React from "react";
 
 import {VictorySunburst} from "../src/index";
@@ -13,22 +14,44 @@ const getAncestors = (node = {}) => {
   return path;
 };
 
+const valueFuncs = [
+  ({ size }) => size,
+  () => 1
+];
+
 class Demo extends React.Component {
+  state = {}
+
   onHover(selected) {
     this.setState({ selected });
   }
 
+  onToggleSize() {
+    const { x } = this.state;
+    this.setState({ x: x ? 0 : 1 });
+  }
+
   render() {
-    const { selected } = this.state || {};
+    const { selected, x } = this.state;
     const ancestors = getAncestors(selected);
+    const valueFunc = valueFuncs[x || 0];
 
     return (
       <div className="demo">
+        <span>
+          <button onClick={this.onToggleSize.bind(this)}>
+            toggle
+          </button>
+        </span>
         <h2 className="label">{selected && selected.name}</h2>
         <VictorySunburst
-          data={data}
+          animate={{duration: 500}}
+          data={data()}
+          value={valueFunc}
           style={{
             data: {
+              fillRule: "evenodd",
+              padding: 0,
               opacity: (slice) => ancestors.indexOf(slice) >= 0 ? 1 : 0.5,
               display: (slice) => slice.depth ? "initial" : "none"
             }

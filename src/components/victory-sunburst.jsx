@@ -8,6 +8,7 @@ import {
   VictoryTransition
 } from "victory-core";
 
+import d3Partition from "./d3-partition";
 import Slice from "./slice";
 
 const defaultStyles = {
@@ -34,6 +35,7 @@ const getRadius = function (props, padding) {
   ) / 2;
 };
 
+@d3Partition
 export default class VictorySunburst extends React.Component {
   static defaultTransitions = {
     onExit: {
@@ -219,27 +221,25 @@ export default class VictorySunburst extends React.Component {
   };
 
   static defaultProps = {
-    data: [
-      {
-        "name": "a",
-        "children": [
-          {
-            "name": "b",
-            "children": [
-              { "name": "c", "size": 3938 },
-              { "name": "d", "size": 3812 }
-            ]
-          },
-          {
-            "name": "e",
-            "children": [
-              { "name": "f", "size": 3938 }
-            ]
-          },
-          { name: "f", "size": 5000 }
-        ]
-      }
-    ],
+    data: {
+      "name": "a",
+      "children": [
+        {
+          "name": "b",
+          "children": [
+            { "name": "c", "size": 3938 },
+            { "name": "d", "size": 3812 }
+          ]
+        },
+        {
+          "name": "e",
+          "children": [
+            { "name": "f", "size": 3938 }
+          ]
+        },
+        { name: "f", "size": 5000 }
+      ]
+    },
     endAngle: 360,
     events: {},
     height: 400,
@@ -309,12 +309,7 @@ export default class VictorySunburst extends React.Component {
 
     const colorScale = this.getColorScale();
 
-    const partition = d3.layout.partition()
-        .sort(null)
-        .value(({ size }) => size);
-
-    const slices = partition.nodes(data[0])
-      .map((slice, index) =>
+    const slices = data.map((slice, index) =>
         this.renderSlice(slice, index, { colorScale, makeSlicePath, style })
       );
 
@@ -322,21 +317,6 @@ export default class VictorySunburst extends React.Component {
   }
 
   render() {
-    // If animating, return a `VictoryAnimation` element that will create
-    // a new `VictoryBar` with nearly identical props, except (1) tweened
-    // and (2) `animate` set to null so we don't recurse forever.
-    if (this.props.animate) {
-      const whitelist = [
-        "data", "endAngle", "height", "innerRadius", "padAngle", "padding",
-        "colorScale", "startAngle", "style", "width"
-      ];
-      return (
-        <VictoryTransition animate={this.props.animate} animationWhitelist={whitelist}>
-          <VictorySunburst {...this.props}/>
-        </VictoryTransition>
-      );
-    }
-
     const style = Helpers.getStyles(
       this.props.style,
       defaultStyles,
